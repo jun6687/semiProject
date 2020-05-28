@@ -1,0 +1,150 @@
+package Calendar2;
+
+import java.awt.BorderLayout;
+import java.awt.Container;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Calendar;
+
+import javax.swing.AbstractButton;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+
+public class Menu extends JFrame implements ActionListener{
+	JTextField yearTf;
+	JTextField monthTf;
+	int year;
+	int month;
+	String check =null;
+	JButton input;
+	JPanel jp1 = new JPanel();
+	JPanel jp2  = new JPanel();
+	JPanel[] jp3 = new JPanel[7];
+	JLabel[][] label = new JLabel[7][7];
+	Calendar cal;
+	Container container = getContentPane();
+	Menu(){
+		cal = Calendar.getInstance();		
+		JLabel title = new JLabel("달력 프로그램" ); 
+		JLabel yearJl = new JLabel("년"); 
+		JLabel monthJl = new JLabel("월"); 
+		yearTf = new JTextField(10);
+		monthTf = new JTextField(8);
+		input  = new JButton("입력");
+		
+		
+		jp1.setLayout(new GridLayout(2,1));
+		container.setLayout(new BorderLayout(10,10));
+		jp2.setLayout(new GridLayout(7,1));		
+		
+		JPanel jp1_1 = new JPanel();
+		jp1_1.setLayout(new FlowLayout());
+		jp1_1.add(title);
+		
+		JPanel jp1_2  = new JPanel();	
+		jp1_2.setLayout(new FlowLayout());
+		
+		jp1_2.add(yearTf);
+		jp1_2.add(yearJl);
+		jp1_2.add(monthTf);
+		jp1_2.add(monthJl);
+		jp1_2.add(input);		
+		
+		jp1.add(jp1_1);
+		jp1.add(jp1_2);
+		
+		
+		input.addActionListener(this);
+					
+		label[0][0]= new JLabel("일",JLabel.CENTER);
+		label[0][1]= new JLabel("월",JLabel.CENTER);
+		label[0][2]= new JLabel("화",JLabel.CENTER);
+		label[0][3]= new JLabel("수",JLabel.CENTER);
+		label[0][4]= new JLabel("목",JLabel.CENTER);
+		label[0][5]= new JLabel("금",JLabel.CENTER);
+		label[0][6]= new JLabel("토",JLabel.CENTER);
+		
+		jp3[0] = new JPanel();
+		jp3[0].setLayout(new GridLayout(1,7));		
+		for(int a= 0;a<7;a++) {
+		jp3[0].add(label[0][a]);
+		}
+		
+		
+		for(int i = 1;i<7;i++) {
+			jp3[i]= new JPanel();
+			jp3[i].setLayout(new GridLayout(1,7));	
+			for(int j = 0; j<7; j++) {
+			label[i][j]= new JLabel(" ",JLabel.CENTER); 
+			jp3[i].add(label[i][j]);			
+			}
+		}
+		
+		for(int i = 0;i<7;i++) {
+			jp2.add(jp3[i]);
+		}
+			
+		container.add(jp1,BorderLayout.NORTH);
+		container.add(jp2,BorderLayout.CENTER);
+		
+
+		setTitle("달력 프로그램");
+		setSize(600,400);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setVisible(true);
+		
+		
+	}
+	
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+//		String inputText;		
+//		inputText = e.getActionCommand();
+		String index = e.getActionCommand();
+		year = Integer.parseInt(yearTf.getText());
+		month = Integer.parseInt(monthTf.getText());
+		if(index.equals("입력")) {
+			
+			for(int i = 1;i<7;i++) {									
+				for(int j = 0; j<7; j++) {
+				label[i][j].setText(" ");						
+				}
+			}
+			
+		
+			cal.set(Calendar.YEAR, year);
+	        cal.set(Calendar.MONTH, month-1);
+	        cal.set(Calendar.DATE, 1);
+
+	        int startDay = cal.get(Calendar.DAY_OF_WEEK);  //월 시작 요일
+	        int lastDay = cal.getActualMaximum(Calendar.DATE); //월 마지막 날짜        
+			int cntweek= 1;
+			int cntday = 1;
+			String strday;
+			
+			for(int i = 0 ; i<42; i++) {
+				strday = Integer.toString(cntday);	
+				if(i%7==0) {
+					if(i==0)continue;
+					cntweek++;
+					label[cntweek][i%7].setText(strday);					
+					}else if(i<startDay-1){					
+						continue;			
+					}else if((cntday-lastDay)>0) {
+						return;
+					}else if(i>=startDay-1){
+					label[cntweek][i%7].setText(strday);										
+			
+					}cntday++;
+			}
+		}
+	}
+	
+
+}
